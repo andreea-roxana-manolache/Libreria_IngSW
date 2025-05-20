@@ -68,8 +68,8 @@ public class Libro {
     public int getValutazione(){
         return valutazione;
     }
-    public StatoLettura getStatoLettura(){
-        return statoLettura;
+    public String getStatoLettura(){
+        return statoLettura.toString();
     }
 
     @Override

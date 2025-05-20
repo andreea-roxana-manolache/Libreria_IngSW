@@ -1,0 +1,22 @@
+package libreria.strategy;
+import model.Libro;
+import java.util.*;
+
+public class FiltroStatoLettura implements StrategiaFiltro{
+    private final String statoLettura;
+
+    public FiltroStatoLettura(String statoLettura) {
+        this.statoLettura = statoLettura.toUpperCase();
+    }
+
+    @Override
+    public List<Libro> filtra(List<Libro> libri) {
+        List<Libro> res = new ArrayList<>();
+        for (Libro libro: libri){
+            if (libro.getStatoLettura() != null && libro.getStatoLettura().equals(this.statoLettura)){
+                res.add(libro);
+            }
+        }
+        return res;
+    }
+}
