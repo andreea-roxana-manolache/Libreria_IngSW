@@ -1,5 +1,5 @@
 package libreria.strategy;
-import model.Libro;
+import libreria.model.Libro;
 import java.util.*;
 
 public class RicercaPerAutore implements StrategiaRicerca {

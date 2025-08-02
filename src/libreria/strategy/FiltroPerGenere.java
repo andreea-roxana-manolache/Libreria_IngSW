@@ -1,6 +1,6 @@
 package libreria.strategy;
 import java.util.*;
-import model.Libro;
+import libreria.model.Libro;
 
 public class FiltroPerGenere implements StrategiaFiltro {
     public final String genere;

@@ -2,11 +2,11 @@ package libreria;
 
 import libreria.memento.Memento;
 import libreria.memento.Originator;
-import model.Libro;
+import libreria.model.Libro;
+import libreria.persistenza.Archivio;
 import libreria.strategy.StrategiaRicerca;
 import libreria.strategy.StrategiaFiltro;
 import libreria.strategy.StrategiaOrdinamento;
-
 import java.util.*;
 
 public class Libreria implements Originator {
@@ -28,15 +28,25 @@ public class Libreria implements Originator {
         }
         return instance;
     }
+
+    //Reciever, sa come gestire l'operazione
     public void aggiungiLibro(Libro libro){
         libri.add(libro);
     }
     public void rimuoviLibro(Libro libro){
         libri.remove(libro);
     }
+    public void modificaLibro(Libro vecchio, Libro nuovo){
+        int indice = libri.indexOf(vecchio);
+        if (indice >= 0){
+            libri.set(indice, nuovo);
+        }
+    }
     public List<Libro> getLibri(){
         return new ArrayList<>(libri);
     }
+
+    public void setLibri(List<Libro> libri){this.libri = new ArrayList<>(libri);}
 
     @Override
     public Memento creaMemento() {
@@ -76,8 +86,21 @@ public class Libreria implements Originator {
         if (strategiaOrdinamento == null) return getLibri();
         return strategiaOrdinamento.ordina(libri);
     }
+    public void salvaJSon(String filePath){
+        Archivio.salvaSuFileJSon(this.libri, filePath);
+    }
 
+    public void caricaJSon(String filePath){
+        List<Libro> caricati = Archivio.caricaDaFileJSon(filePath);
+        setLibri(caricati);
+    }
+    public void salvaCSV(String filePath){
+        Archivio.salvaSuFileCSV(this.libri, filePath);
+    }
 
-
+    public void caricaCSV(String filePath){
+        List<Libro> caricati = Archivio.caricaDaFileCSV(filePath);
+        setLibri(caricati);
+    }
 
 }

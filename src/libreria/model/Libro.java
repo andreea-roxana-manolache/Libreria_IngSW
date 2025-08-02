@@ -1,4 +1,4 @@
-package model;
+package libreria.model;
 
 public class Libro {
     private final String titolo;
@@ -12,23 +12,20 @@ public class Libro {
         //parametri obbligatori
         private final String titolo;
         private final String autore;
+        private String isbn = "";
 
         //parametri opzionali
         private String genere = "";
-        private String isbn = "";
         private int valutazione = -1;
         private StatoLettura statoLettura = null;
 
-        public Builder(String titolo, String autore){
+        public Builder(String titolo, String autore, String isbn){
             this.titolo = titolo;
             this.autore = autore;
+            this.isbn = isbn;
         }
         public Builder genere(String genere) {
             this.genere = genere;
-            return this;
-        }
-        public Builder isbn(String isbn){
-            this.isbn = isbn;
             return this;
         }
         public Builder valutazione(int valutazione){
@@ -53,32 +50,29 @@ public class Libro {
         this.statoLettura = builder.statoLettura;
     }
 
-    public String getTitolo(){
-        return titolo;
+    public String getTitolo(){return titolo;}
+    public String getAutore(){return autore;}
+    public String getGenere(){return genere;}
+    public String getIsbn(){return isbn;}
+    public int getValutazione(){return valutazione;}
+    public String getStatoLettura() {
+        if (statoLettura != null) return statoLettura.name();
+        return null;
     }
-    public String getAutore(){
-        return autore;
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (!(o instanceof Libro)) return false;
+        Libro libro = (Libro) o;
+        return libro.isbn.equals(this.isbn);
     }
-    public String getGenere(){
-        return genere;
+    @Override
+    public int hashCode(){
+        return isbn.hashCode();
     }
-    public String getIsbn(){
-        return isbn;
-    }
-    public int getValutazione(){
-        return valutazione;
-    }
-    public String getStatoLettura(){
-        return statoLettura.toString();
-    }
-
     @Override
     public String toString() {
         return "["+ "titolo=" + titolo +", autore=" + autore +", genere=" + genere +", isbn=" + isbn
                 +", valutazione=" + valutazione +", stato=" + statoLettura +"]";
     }
-
-
-
-
 }
