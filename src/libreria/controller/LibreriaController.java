@@ -49,4 +49,32 @@ public class LibreriaController {
         return false;
     }
 
+    public List<Libro> ricercaPerTitolo(String chiave){
+        libreria.setStrategiaRicerca(new RicercaPerTitolo());
+        return libreria.ricerca(chiave);
+    }
+
+    public List<Libro> ricercaPerAutore(String chiave){
+        libreria.setStrategiaRicerca(new RicercaPerAutore());
+        return libreria.ricerca(chiave);
+    }
+
+    public List<Libro> filtraPerGenere(String genere){
+        libreria.setStrategiaFiltro(new FiltroPerGenere(genere));
+        return libreria.filtra();
+    }
+
+    public List<Libro> filtraPerStato(String statoLettura){
+        libreria.setStrategiaFiltro(new FiltroStatoLettura(statoLettura));
+        return libreria.filtra();
+    }
+
+    public List<Libro> ordinaPerTitolo(){
+        libreria.setStrategiaOrdinamento(new OrdinamentoPerTitolo());
+        return libreria.ordina();
+    }
+    public List<Libro> ordinaPerValutazione(){
+        libreria.setStrategiaOrdinamento(new OrdinamentoPerValutazione());
+        return libreria.ordina();
+    }
 }
