@@ -4,6 +4,7 @@ import libreria.Libreria;
 import libreria.command.*;
 import libreria.memento.Caretaker;
 import libreria.model.Libro;
+import libreria.persistenza.Archivio;
 import libreria.strategy.*;
 
 import java.util.List;
@@ -21,8 +22,19 @@ public class LibreriaController {
         return libreria.getLibri();
     }
 
-    public void aggiungiLibro(Libro libro){
+    public Libreria getLibreria(){
+        return libreria;
+    }
+    public Caretaker getCaretaker(){
+        return caretaker;
+    }
+
+    public boolean aggiungiLibro(Libro libro){
+        for(Libro l: libreria.getLibri())
+            if(l.equals(libro))
+                return false;
         caretaker.eseguiComando(new AggiungiLibroCommand(libreria, libro));
+        return true;
     }
 
     public void modificaLibro(Libro oldLibro, Libro newLibro){
@@ -47,6 +59,16 @@ public class LibreriaController {
             return true;
         }
         return false;
+    }
+
+    public void caricaDaJson(String path){
+        List<Libro> caricati = new Archivio().caricaDaFileJSon(path);
+        libreria.setLibri(caricati);
+    }
+
+    public void caricaDaCsv(String path){
+        List<Libro> lista = new Archivio().caricaDaFileCSV(path);
+        libreria.setLibri(lista);
     }
 
     public List<Libro> ricercaPerTitolo(String chiave){

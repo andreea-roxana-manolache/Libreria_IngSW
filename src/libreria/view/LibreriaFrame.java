@@ -2,9 +2,11 @@ package libreria.view;
 
 import libreria.controller.LibreriaController;
 import libreria.model.Libro;
+import libreria.persistenza.Archivio;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class LibreriaFrame extends JFrame{
     private final LibreriaController controller;
@@ -25,6 +27,8 @@ public class LibreriaFrame extends JFrame{
 
         add(new JScrollPane(tabella), BorderLayout.CENTER);
         add(creaBarraStrumenti(), BorderLayout.NORTH);
+        add(creaBarraStrumentiSalva(), BorderLayout.SOUTH);
+        add(creaBarraStrumentiStrategy(), BorderLayout.EAST);
 
         setVisible(true);
     }
@@ -35,13 +39,19 @@ public class LibreriaFrame extends JFrame{
         JButton aggiungBtn = new JButton("Aggiungi");
         JButton modificaBtn = new JButton("Modifica");
         JButton rimuoviBtn = new JButton("Rimuovi");
+        JButton undoBtn = new JButton("Undo");
+        JButton redoBtn = new JButton("Redo");
 
         aggiungBtn.addActionListener(e -> {
             LibroDialog dialog = new LibroDialog(this);
             dialog.setVisible(true);
             if(dialog.isConfermato()){
-                controller.aggiungiLibro(dialog.getLibro());
-                modello.aggiorna(controller.getLibri());
+                Libro nuovoLibro = dialog.getLibro();
+                if(!controller.aggiungiLibro(nuovoLibro)){
+                    JOptionPane.showMessageDialog(this, "ISBN già presente, libro non aggiunto.");
+                } else {
+                    modello.aggiorna(controller.getLibri());
+                }
             }
         });
 
@@ -66,9 +76,131 @@ public class LibreriaFrame extends JFrame{
                 modello.aggiorna(controller.getLibri());
             }
         });
+
+        undoBtn.addActionListener(e -> {
+            if(!controller.undo()){
+                JOptionPane.showMessageDialog(this, "Nessuna operazione da annullare.");
+            } else{
+                modello.aggiorna(controller.getLibri());
+            }
+        });
+
+        redoBtn.addActionListener(e -> {
+            if(!controller.redo()){
+                JOptionPane.showMessageDialog(this, "Nessuna operazione da ripetere.");
+            } else{
+                modello.aggiorna(controller.getLibri());
+            }
+        });
+
+
         toolbar.add(aggiungBtn);
         toolbar.add(modificaBtn);
         toolbar.add(rimuoviBtn);
+        toolbar.addSeparator();
+        toolbar.add(undoBtn);
+        toolbar.add(redoBtn);
+
         return toolbar;
+    }
+
+    private JToolBar creaBarraStrumentiSalva(){
+        JToolBar toolbar = new JToolBar();
+        JButton salvaJsonBtn = new JButton("SalvaJson");
+        JButton salvaCsvBtn = new JButton("SalvaCsv");
+        JButton caricaJsonBtn = new JButton("CaricaJson");
+        JButton caricaCsvBtn = new JButton("CaricaCsv");
+
+        salvaJsonBtn.addActionListener(e -> {
+            new Archivio().salvaSuFileJSon(controller.getLibri(), "libreria.json");
+            JOptionPane.showMessageDialog(this, "Libreria salvata.");
+        });
+
+        salvaCsvBtn.addActionListener(e -> {
+            new Archivio().salvaSuFileCSV(controller.getLibri(), "libreria.csv");
+            JOptionPane.showMessageDialog(this, "Libreria salvata.");
+        });
+
+        caricaJsonBtn.addActionListener(e -> {
+            List<Libro> lista = new Archivio().caricaDaFileJSon("libreria.json");
+            if(lista.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Nessun file json trovato o libreria vuota.");
+            }else {
+                controller.getLibreria().setLibri(lista);
+                modello.aggiorna(lista);
+            }
+        });
+
+        caricaCsvBtn.addActionListener(e -> {
+            List<Libro> lista = new Archivio().caricaDaFileCSV("libreria.csv");
+            if(lista.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Nessun file csv trovato o libreria vuota.");
+            } else{
+                controller.getLibreria().setLibri(lista);
+                modello.aggiorna(lista);
+                }
+        });
+
+        toolbar.add(salvaJsonBtn);
+        toolbar.add(salvaCsvBtn);
+        toolbar.addSeparator();
+        toolbar.add(caricaJsonBtn);
+        toolbar.add(caricaCsvBtn);
+        return toolbar;
+    }
+
+    private JToolBar creaBarraStrumentiStrategy(){
+        JToolBar toolbar = new JToolBar(SwingConstants.VERTICAL);
+
+        JButton ricercaTitoloBtn = new JButton("Ricerca Titolo");
+        JButton ricercaAutoreBtn = new JButton("Ricerca Autore");
+        JButton filtraGenereBtn = new JButton("Filtra Genere");
+        JButton filtraStatoBtn = new JButton("Filtra Stato");
+        JButton ordinaTitoloBtn = new JButton("Ordina per Titolo");
+        JButton ordinaValutazioneBtn = new JButton("Ordina per Valutazione");
+
+        ricercaTitoloBtn.addActionListener(e -> {
+            String chiave = JOptionPane.showInputDialog(this, "Inserisci Titolo");
+            if(chiave != null){
+                List<Libro> risultati = controller.ricercaPerTitolo(chiave);
+                modello.aggiorna(risultati);
+            }
+        });
+
+        ricercaAutoreBtn.addActionListener(e -> {
+            String chiave = JOptionPane.showInputDialog(this, "Inserisci Autore");
+            if(chiave != null){
+                List<Libro> risultati = controller.ricercaPerAutore(chiave);
+                modello.aggiorna(risultati);
+            }
+        });
+
+        filtraGenereBtn.addActionListener(e -> {
+            String genere = JOptionPane.showInputDialog(this, "Inserisci Genere");
+            if(genere != null){
+                List<Libro> risultati = controller.filtraPerGenere(genere);
+                modello.aggiorna(risultati);
+            }
+        });
+
+        filtraStatoBtn.addActionListener(e -> {
+            String stato = JOptionPane.showInputDialog(this, "Inserisci Stato (LETTO, DA_LEGGERE, IN_LETTURA)");
+            if(stato != null){
+                List<Libro> risultati = controller.filtraPerStato(stato);
+                modello.aggiorna(risultati);
+            }
+        });
+
+        ordinaTitoloBtn.addActionListener(e -> modello.aggiorna(controller.ordinaPerTitolo()));
+        ordinaValutazioneBtn.addActionListener(e -> modello.aggiorna(controller.ordinaPerValutazione()));
+
+        toolbar.add(ricercaTitoloBtn);
+        toolbar.add(ricercaAutoreBtn);
+        toolbar.add(filtraGenereBtn);
+        toolbar.add(filtraStatoBtn);
+        toolbar.add(ordinaTitoloBtn);
+        toolbar.add(ordinaValutazioneBtn);
+        return toolbar;
+
     }
 }
