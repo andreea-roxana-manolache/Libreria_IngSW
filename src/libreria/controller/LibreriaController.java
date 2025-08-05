@@ -25,9 +25,6 @@ public class LibreriaController {
     public Libreria getLibreria(){
         return libreria;
     }
-    public Caretaker getCaretaker(){
-        return caretaker;
-    }
 
     public boolean aggiungiLibro(Libro libro){
         for(Libro l: libreria.getLibri())
