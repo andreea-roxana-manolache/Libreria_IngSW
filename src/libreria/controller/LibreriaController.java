@@ -62,25 +62,25 @@ public class LibreriaController {
     }
 
     public boolean caricaDaJson(String path){
-        List<Libro> caricati = new Archivio().caricaDaFileJSon(path);
+        List<Libro> caricati = Archivio.caricaDaFileJSon(path);
         if(caricati.isEmpty()) return false;
         libreria.setLibri(caricati);
         return true;
     }
 
     public boolean caricaDaCsv(String path){
-        List<Libro> lista = new Archivio().caricaDaFileCSV(path);
+        List<Libro> lista = Archivio.caricaDaFileCSV(path);
         if(lista.isEmpty()) return false;
         libreria.setLibri(lista);
         return true;
     }
 
     public void salvaSuJson(List<Libro> libri, String path){
-        new Archivio().salvaSuFileJSon(libri, path);
+        Archivio.salvaSuFileJSon(libri, path);
     }
 
     public void salvaSuCsv(List<Libro> libri, String path){
-        new Archivio().salvaSuFileCSV(libri, path);
+        Archivio.salvaSuFileCSV(libri, path);
     }
 
     public List<Libro> ricercaPerTitolo(String chiave){
