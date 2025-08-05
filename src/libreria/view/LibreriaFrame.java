@@ -2,7 +2,6 @@ package libreria.view;
 
 import libreria.controller.LibreriaController;
 import libreria.model.Libro;
-import libreria.persistenza.Archivio;
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,33 +111,29 @@ public class LibreriaFrame extends JFrame{
         JButton caricaCsvBtn = new JButton("CaricaCsv");
 
         salvaJsonBtn.addActionListener(e -> {
-            new Archivio().salvaSuFileJSon(controller.getLibri(), "libreria.json");
+            controller.salvaSuJson(controller.getLibri(), "libreria.json");
             JOptionPane.showMessageDialog(this, "Libreria salvata.");
         });
 
         salvaCsvBtn.addActionListener(e -> {
-            new Archivio().salvaSuFileCSV(controller.getLibri(), "libreria.csv");
+            controller.salvaSuCsv(controller.getLibri(), "libreria.csv");
             JOptionPane.showMessageDialog(this, "Libreria salvata.");
         });
 
         caricaJsonBtn.addActionListener(e -> {
-            List<Libro> lista = new Archivio().caricaDaFileJSon("libreria.json");
-            if(lista.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Nessun file json trovato o libreria vuota.");
+            if(controller.caricaDaJson("libreria.json")){
+                modello.aggiorna(controller.getLibri());
             }else {
-                controller.getLibreria().setLibri(lista);
-                modello.aggiorna(lista);
+                JOptionPane.showMessageDialog(this, "Nessun file json trovato o libreria vuota.");
             }
         });
 
         caricaCsvBtn.addActionListener(e -> {
-            List<Libro> lista = new Archivio().caricaDaFileCSV("libreria.csv");
-            if(lista.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Nessun file csv trovato o libreria vuota.");
+            if(controller.caricaDaCsv("libreria.csv")){
+                modello.aggiorna(controller.getLibri());
             } else{
-                controller.getLibreria().setLibri(lista);
-                modello.aggiorna(lista);
-                }
+                JOptionPane.showMessageDialog(this, "Nessun file csv trovato o libreria vuota.");
+            }
         });
 
         toolbar.add(salvaJsonBtn);
