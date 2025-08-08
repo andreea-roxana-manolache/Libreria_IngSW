@@ -153,6 +153,7 @@ public class LibreriaFrame extends JFrame{
         JButton filtraStatoBtn = new JButton("Filtra Stato");
         JButton ordinaTitoloBtn = new JButton("Ordina per Titolo");
         JButton ordinaValutazioneBtn = new JButton("Ordina per Valutazione");
+        JButton mostraTuttiBtn = new JButton("Mostra Tutti");
 
         ricercaTitoloBtn.addActionListener(e -> {
             String chiave = JOptionPane.showInputDialog(this, "Inserisci Titolo");
@@ -186,15 +187,23 @@ public class LibreriaFrame extends JFrame{
             }
         });
 
+        mostraTuttiBtn.addActionListener(e -> {
+            modello.aggiorna(controller.getLibri());
+        });
+
         ordinaTitoloBtn.addActionListener(e -> modello.aggiorna(controller.ordinaPerTitolo()));
         ordinaValutazioneBtn.addActionListener(e -> modello.aggiorna(controller.ordinaPerValutazione()));
 
         toolbar.add(ricercaTitoloBtn);
         toolbar.add(ricercaAutoreBtn);
+        toolbar.addSeparator();
         toolbar.add(filtraGenereBtn);
         toolbar.add(filtraStatoBtn);
+        toolbar.addSeparator();
         toolbar.add(ordinaTitoloBtn);
         toolbar.add(ordinaValutazioneBtn);
+        toolbar.addSeparator();
+        toolbar.add(mostraTuttiBtn);
         return toolbar;
 
     }
