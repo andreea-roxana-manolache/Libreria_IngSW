@@ -14,6 +14,7 @@ import java.util.List;
 public class Archivio {
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(Libro.class, new LibroTypeAdapter())
+            .setPrettyPrinting()
             .create();
 
     public static void salvaSuFileJSon(List<Libro> libri, String percorso){
