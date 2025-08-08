@@ -6,7 +6,7 @@ public class RicercaPerTitolo implements StrategiaRicerca {
 
     @Override
     public List<Libro> ricerca(List<Libro> libri, String chiave) {
-        List<Libro> res = new ArrayList<Libro>();
+        List<Libro> res = new ArrayList<>();
         String chiaveN = chiave == null ? "" : chiave.toUpperCase();
         for (Libro libro: libri){
             String titolo = libro.getTitolo();
