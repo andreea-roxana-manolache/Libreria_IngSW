@@ -7,9 +7,10 @@ public class RicercaPerTitolo implements StrategiaRicerca {
     @Override
     public List<Libro> ricerca(List<Libro> libri, String chiave) {
         List<Libro> res = new ArrayList<Libro>();
-        String chiaveN = chiave.toUpperCase();
+        String chiaveN = chiave == null ? "" : chiave.toUpperCase();
         for (Libro libro: libri){
-            if (libro.getTitolo().toUpperCase().contains(chiaveN)){
+            String titolo = libro.getTitolo();
+            if (titolo != null && titolo.toUpperCase().contains(chiaveN)){
                 res.add(libro);
             }
         }

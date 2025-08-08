@@ -13,7 +13,8 @@ public class FiltroStatoLettura implements StrategiaFiltro{
     public List<Libro> filtra(List<Libro> libri) {
         List<Libro> res = new ArrayList<>();
         for (Libro libro: libri){
-            if (libro.getStatoLettura() != null && libro.getStatoLettura().equals(this.statoLettura)){
+            String stato = libro.getStatoLettura();
+            if (stato != null && stato.toUpperCase().equals(this.statoLettura)){
                 res.add(libro);
             }
         }

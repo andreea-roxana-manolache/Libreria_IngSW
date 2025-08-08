@@ -6,9 +6,10 @@ public class RicercaPerAutore implements StrategiaRicerca {
     @Override
     public List<Libro> ricerca(List<Libro> libri, String chiave) {
         List<Libro> res = new ArrayList<>();
-        String chiaveN = chiave.toUpperCase();
+        String chiaveN = chiave == null ? "" : chiave.toUpperCase();
         for (Libro libro: libri){
-            if (libro.getAutore().toUpperCase().contains(chiaveN)){
+            String autore = libro.getAutore();
+            if (autore != null && autore.toUpperCase().contains(chiaveN)){
                 res.add(libro);
             }
         }

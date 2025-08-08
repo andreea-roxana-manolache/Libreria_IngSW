@@ -13,7 +13,8 @@ public class FiltroPerGenere implements StrategiaFiltro {
     public List<Libro> filtra(List<Libro> libri) {
         List<Libro> res = new ArrayList<>();
         for (Libro libro: libri){
-            if (libro.getGenere().toUpperCase().contains(this.genere)){
+            String g = libro.getGenere();
+            if (g != null && g.toUpperCase().contains(this.genere)){
                 res.add(libro);
             }
         }
