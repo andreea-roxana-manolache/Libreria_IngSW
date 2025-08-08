@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import libreria.Libreria;
 import libreria.model.Libro;
+import libreria.model.StatoLettura;
 import libreria.command.AggiungiLibroCommand;
+import libreria.command.ModificaLibroCommand;
+import libreria.command.RimuoviLibroCommand;
 import java.util.List;
 
 public class CaretakerTest {
@@ -20,7 +23,7 @@ public class CaretakerTest {
     }
 
     @Test
-    public void testAggiornaStato(){
+    public void testAggiungiLibro(){
         Libro libro = new Libro.Builder("Titolo test", "Autore test", "ISBN001").build();
         AggiungiLibroCommand cmd = new AggiungiLibroCommand(libreria, libro);
 
@@ -82,5 +85,54 @@ public class CaretakerTest {
         caretaker.redo(); //ripristina libro2
         assertEquals(2,libreria.getLibri().size());
         assertTrue(libreria.getLibri().contains(libro2));
+    }
+
+    @Test
+    public void testModificaLibro(){
+        Libro vecchio = new Libro.Builder("Titolo1", "Autore1", "ISBN001").build();
+        caretaker.eseguiComando(new AggiungiLibroCommand(libreria, vecchio));
+
+        Libro nuovo = new Libro.Builder("Tit.1", "Autore1", "ISBN001")
+                .genere("Giallo")
+                .valutazione(3)
+                .statoLettura(StatoLettura.LETTO)
+                .build();
+
+        caretaker.eseguiComando(new ModificaLibroCommand(libreria, vecchio, nuovo));
+
+        assertEquals(1, libreria.getLibri().size());
+        assertEquals("Tit.1", libreria.getLibri().getFirst().getTitolo());
+        assertEquals("Giallo", libreria.getLibri().getFirst().getGenere());
+
+        caretaker.undo();
+        assertEquals("Titolo1", libreria.getLibri().getFirst().getTitolo());
+        assertEquals("", libreria.getLibri().getFirst().getGenere());
+
+        caretaker.redo();
+        assertEquals("Tit.1", libreria.getLibri().getFirst().getTitolo());
+
+    }
+
+    @Test
+    public void testRimuoviLibro(){
+        Libro l1 = new Libro.Builder("Titolo1", "Autore1", "ISBN001").build();
+        Libro l2 = new Libro.Builder("Titolo2", "Autore2", "ISBN002").build();
+
+        caretaker.eseguiComando(new AggiungiLibroCommand(libreria, l1));
+        caretaker.eseguiComando(new AggiungiLibroCommand(libreria, l2));
+        assertEquals(2, libreria.getLibri().size());
+
+        caretaker.eseguiComando(new RimuoviLibroCommand(libreria, l1));
+        assertEquals(1, libreria.getLibri().size());
+        assertFalse(libreria.getLibri().contains(l1));
+        assertTrue(libreria.getLibri().contains(l2));
+
+        caretaker.undo();
+        assertEquals(2,libreria.getLibri().size());
+        assertTrue(libreria.getLibri().contains(l1));
+
+        caretaker.redo();
+        assertEquals(1,libreria.getLibri().size());
+        assertFalse(libreria.getLibri().contains(l1));
     }
 }
