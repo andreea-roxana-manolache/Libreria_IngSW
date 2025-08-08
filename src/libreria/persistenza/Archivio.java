@@ -56,7 +56,8 @@ public class Archivio {
     public static List<Libro> caricaDaFileCSV(String percorso) {
         List<Libro> libri = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(percorso))) {
-            String linea = reader.readLine(); // salta intestazione
+            reader.readLine(); // salta intestazione
+            String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] campi = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 if (campi.length < 6) {
