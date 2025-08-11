@@ -28,7 +28,8 @@ public class Archivio {
     public static List<Libro> caricaDaFileJSon(String percorso){
         try (Reader reader = new FileReader(percorso)) {
             Type listType = new TypeToken<List<Libro>>(){}.getType();
-            return gson.fromJson(reader, listType);
+            List<Libro> lista = gson.fromJson(reader, listType);
+            return (lista != null) ? lista : new ArrayList<>();
         }catch (IOException | JsonSyntaxException e) {
             System.err.println("Errore durante il caricamento da JSON: " + e.getMessage());
             return new ArrayList<>(); // ritorna lista vuota in caso di errore
