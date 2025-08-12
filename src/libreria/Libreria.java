@@ -3,7 +3,6 @@ package libreria;
 import libreria.memento.Memento;
 import libreria.memento.Originator;
 import libreria.model.Libro;
-import libreria.persistenza.Archivio;
 import libreria.strategy.StrategiaRicerca;
 import libreria.strategy.StrategiaFiltro;
 import libreria.strategy.StrategiaOrdinamento;
@@ -85,22 +84,6 @@ public class Libreria implements Originator {
     public List<Libro> ordina(){
         if (strategiaOrdinamento == null) return getLibri();
         return strategiaOrdinamento.ordina(libri);
-    }
-    public void salvaJSon(String filePath){
-        Archivio.salvaSuFileJSon(this.libri, filePath);
-    }
-
-    public void caricaJSon(String filePath){
-        List<Libro> caricati = Archivio.caricaDaFileJSon(filePath);
-        setLibri(caricati);
-    }
-    public void salvaCSV(String filePath){
-        Archivio.salvaSuFileCSV(this.libri, filePath);
-    }
-
-    public void caricaCSV(String filePath){
-        List<Libro> caricati = Archivio.caricaDaFileCSV(filePath);
-        setLibri(caricati);
     }
 
 }
